@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Three-Tier App</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+    <h1>Three-Tier App Frontend</h1>
+    <div id="backend-response" style="color: green; font-weight: bold;">Loading backend data...</div>
+
+    <script>
+        // Calls the backend container via localhost mapping
+        fetch('http://localhost:5001/api/data')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('backend-response').innerText = data.message || data.error;
+            })
+            .catch(err => {
+                document.getElementById('backend-response').innerText = "Error connecting to backend.";
+            });
+    </script>
+</body>
+</html>

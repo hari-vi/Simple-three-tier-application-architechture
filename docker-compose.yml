@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  # 1. Database Tier
+  database:
+    image: mongo:latest
+    container_name: db_tier
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:?Set MONGO_USERNAME in .env}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:?Set MONGO_PASSWORD in .env}
+    volumes:
+      - mongo-data:/data/db
+
+  # 2. Application/Backend Tier
+  backend:
+    build: ./backend
+    container_name: api_tier
+    ports:
+      - "5001:5001"
+    environment:
+      MONGO_URI: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@database:27017/myapp?authSource=admin
+    depends_on:
+      - database
+
+  # 3. Presentation/Frontend Tier
+  frontend:
+    build: ./frontend
+    container_name: web_tier
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  mongo-data:
